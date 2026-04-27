@@ -23,8 +23,9 @@ if uploaded_file is not None:
         # 2. Extract and Load Audio
         y, sr = librosa.load(tfile.name, sr=None)
         
-        # 3. Detect Onsets (Shots)
-        onsets = librosa.onset.onset_detect(y=y, sr=sr, units='time', backtrack=True)
+# 3. Detect Onsets (Shots) with a "wait" to prevent double-counting
+        # 'wait=20' at 512 hop_length is roughly 0.2 seconds of silence required between shots
+        onsets = librosa.onset.onset_detect(y=y, sr=sr, units='time', backtrack=True, wait=20, pre_max=20, post_max=20)
         
         # 4. Create the Split Table
         if len(onsets) > 0:
